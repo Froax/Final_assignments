@@ -1,50 +1,23 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Stations>
-<Station>
-<Code>HT</Code>
-<Type>knooppuntIntercitystation</Type>
-<Namen>
-<Kort>Den Bosch</Kort>
-<Middel>'s-Hertogenbosch</Middel>
-<Lang>'s-Hertogenbosch</Lang>
-</Namen>
-<Land>NL</Land>
-<Synoniemen>
-<Synoniem>Hertogenbosch ('s)</Synoniem>
-<Synoniem>Den Bosch</Synoniem>
-</Synoniemen>
-</Station>
-<Station>
-<Code>ALMO</Code>
-<Type>stoptreinstation</Type>
-<Namen>
-<Kort>Oostvaard</Kort>
-<Middel>Oostvaarders</Middel>
-<Lang>Almere Oostvaarders</Lang>
-</Namen>
-<Land>NL</Land>
-<Synoniemen></Synoniemen>
-</Station>
-<Station>
-<Code>ATN</Code>
-<Type>stoptreinstation</Type>
-<Namen>
-<Kort>Aalten</Kort>
-<Middel>Aalten</Middel>
-<Lang>Aalten</Lang>
-</Namen>
-<Land>NL</Land>
-<Synoniemen></Synoniemen>
-</Station>
-<Station>
-<Code>ASA</Code>
-<Type>intercitystation</Type>
-<Namen>
-<Kort>Amstel</Kort>
-<Middel>Amsterdam Amstel</Middel>
-<Lang>Amsterdam Amstel</Lang>
-</Namen>
-<Land>NL</Land>
-<Synoniemen></Synoniemen>
-</Station>
-</Stations>
+import xmltodict
+
+def verwerk_xml():
+    bestand = open('stations.xml', 'r')
+    xml_string = bestand.read()
+    return xmltodict.parse(xml_string)
+
+stations = verwerk_xml()
+
+print('Dit zijn de codes en types van 4 stations: ')
+for station in stations['Stations']['Station']:
+    print('{:4} - {}'.format(station['Code'], station['Type']))
+
+print('\nDit zijn alle stations met een of meer synoniemen: ')
+
+for station in stations['Stations']['Station']:
+    if station['Synoniemen'] is not None:
+        for synoniem in station['Synoniemen']['Synoniem']:
+            print('{} - {}'.format(station['Code'], synoniem))
+
+print('Dit is de lange naam van elk station: ')
+for station in stations['Stations']['Station']:
+    print('{:4} - {}'.format(station['Code'], station['Namen']['Lang']))
