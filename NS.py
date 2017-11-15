@@ -1,32 +1,23 @@
-def standaardprijs(afstandKM):
-    afstandKM = input('Hoeveel kilometer wilt u gaan reizen:')
-    if afstandKM<=50:
-        standaardprijs=int(afstandKM)*0.80
-    else:
-        verder_dan_50=int(afstandKM)-50
-        standaardprijs=15+(verder_dan_50*0.60)
-    return standaardprijs
+import xmltodict
 
-leeftijd=0
-weekendrit = input('Welke dag gaat u reizen:')
-def ritprijs(leeftijd, weekendrit):
-    if weekendrit=='zondag' or 'zaterdag':
-        weekendrit=True
-    else:
-        weekendrit=False
-    leeftijd = input('Wat is u leeftijd:')
-    if leeftijd<15 and leeftijd>65 and str(weekendrit)==False:
-        ritprijs=standaardprijs*0.30
-        return ritprijs
-    elif leeftijd<15 and leeftijd>65 and weekendrit==True:
-        ritprijs=standaardprijs*0.35
-        return ritprijs
-    if  leeftijd>15 and leeftijd<65 and weekendrit==True:
-        ritprijs=standaardprijs*0.40
-        return ritprijs
-    else:
-        ritprijs=standaardprijs
-        return ritprijs
-    print('is ritprijs bedraagd {} euro'.format(str(ritprijs)))
-print(ritprijs(weekendrit, leeftijd))
+def verwerk_xml():
+    bestand = open('stations.xml', 'r')
+    xml_string = bestand.read()
+    return xmltodict.parse(xml_string)
 
+stations = verwerk_xml()
+
+print('Dit zijn de codes en types van 4 stations: ')
+for station in stations['Stations']['Station']:
+    print('{:4} - {}'.format(station['Code'], station['Type']))
+
+print('\nDit zijn alle stations met een of meer synoniemen: ')
+
+for station in stations['Stations']['Station']:
+    if station['Synoniemen'] is not None:
+        for synoniem in station['Synoniemen']['Synoniem']:
+            print('{} - {}'.format(station['Code'], synoniem))
+
+print('Dit is de lange naam van elk station: ')
+for station in stations['Stations']['Station']:
+    print('{:4} - {}'.format(station['Code'], station['Namen']['Lang']))
